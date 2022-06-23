@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 interface DefaultProps {
-    searchWords?: array;
-    textToHighlight?: string;
+    caseSensitive?: boolean,
+    searchWords?: [{text:string,style?:object}],
+    textToHighlight?: string|node,
 }
 
 declare class Help extends React.Component<DefaultProps> {
