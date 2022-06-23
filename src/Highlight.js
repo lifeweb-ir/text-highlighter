@@ -70,9 +70,9 @@ class Highlighter extends Component {
     let t = [];
     let s = 0;
     let e = _t.length;
-    if(!breakIndex.length) return _t;
+    if (!breakIndex.length) return _t;
     for (let i = 0; i < breakIndex.length; i++) {
-      let bIndex= breakIndex[i] - this.breakCount
+      let bIndex = breakIndex[i] - this.breakCount;
       if (bIndex < start) {
         continue;
       }
@@ -83,17 +83,16 @@ class Highlighter extends Component {
       }
 
       if (bIndex > start) {
-        e =  bIndex - start - 1;
-        if(s<e){
+        e = bIndex - start + this.breakCount;
+        if (s < e) {
           t.push(<span key={`b_${i}`}>{_t.slice(s, e)}</span>);
         }
         t.push(<br key={`bb_${i}`} />);
         this.breakCount++;
-        s = bIndex - start - 1;
+        s = bIndex - start + this.breakCount - 1;
       }
     }
     if (t.length === 0 || e) {
-        console.log('+++', e ,_t.slice(s, _t.length));
       t.push(<span key={`b_end`}>{_t.slice(s, _t.length)}</span>);
     }
 
@@ -108,26 +107,46 @@ class Highlighter extends Component {
     let wordLength;
     let findWordObj = [];
     if (_textToHighlight) {
-      let textToHighlight = ` ${htmlToString(
-        _textToHighlight,
-        true,
-        3
-      ).trim()} `;
-
-      let breakLineIndex = [
-        ...textToHighlight.matchAll(new RegExp(`\n`, "gim")),
-      ].map((a) => a.index);
-      textToHighlight = textToHighlight.replace(new RegExp(`\n`, "gim"), "");
+      let textToHighlight = "";
+      let breakLineIndex = [];
+      if (typeof _textToHighlight === "object") {
+        if (!_textToHighlight.type) {
+          try {
+            let _t = JSON.stringify(_textToHighlight);
+            textToHighlight = ` ${_t.trim()} `;
+          } catch {
+            return "textToHighlight";
+          }
+        } else {
+          textToHighlight = ` ${htmlToString(
+            _textToHighlight,
+            true,
+            3
+          ).trim()} `;
+          breakLineIndex = [
+            ...textToHighlight.matchAll(new RegExp(`\n`, "gim")),
+          ].map((a) => a.index);
+          textToHighlight = textToHighlight.replace(
+            new RegExp(`\n`, "gim"),
+            " "
+          );
+        }
+      } else {
+        textToHighlight = ` ${_textToHighlight.trim()} `;
+      }
       searchWords.map((word, idx) => {
         if (word && word.text) {
           wordLength = word.text.trim().length;
 
           firstIndexesWord = [
             ...textToHighlight.matchAll(
-              new RegExp(caseSensitive ? ` ${word.text.trim()} ` : `${word.text.trim()}` , "gim")
+              new RegExp(
+                caseSensitive ? ` ${word.text.trim()} ` : `${word.text.trim()}`,
+                "gim"
+              )
             ),
           ].map((a) => a.index);
-          let caseSensitiveWord = caseSensitive ? 0 : 1
+          let caseSensitiveWord = caseSensitive ? 0 : 1;
           findWordObj = firstIndexesWord.map((first, index) => {
             firstEnd.push(first, first + wordLength);
 
@@ -166,8 +185,11 @@ class Highlighter extends Component {
 
       let start = 0;
       let end = 0;
-
-      console.log(all, caseSensitive);
+      all = [
+        ...new Map(
+          all.map((item) => [`${item["from"]}_${item["to"]}`, item])
+        ).values(),
+      ];
 
       for (let i = 0; i < all.length; i++) {
         let style = all[i].style;
@@ -185,7 +207,7 @@ class Highlighter extends Component {
 
         // اگر شروع بعدی از انتها کوچکتر بود
         for (let j = i + 1; j < all.length; j++) {
-          if (all[j].from < end && all[j].to > end) {
+          if (all[j].from < end && all[j].to >= end) {
             end = all[j].to;
             i = j;
           }
@@ -210,7 +232,7 @@ class Highlighter extends Component {
         );
       }
     }
-    return data;
+    return <span style={{ padding: "0" }}>{data}</span>;
   }
 
   render() {
