@@ -1,6 +1,6 @@
 {
   "name": "lifeweb-text-highlighter",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "text highlighter",
   "main": "lib/index.js",
   "module": "lib/Highlight.js",
@@ -33,11 +33,6 @@
     "marker",
     "persianText"
   ],
-  "peerDependencies": {
-    "prop-types": "^15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.5",
