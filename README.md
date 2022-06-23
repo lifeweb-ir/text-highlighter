@@ -2,7 +2,7 @@
 
 [![NPM version][npm-version-image]][npm-url] [![NPM downloads][npm-downloads-size-image]][npm-url] [![NPM downloads][npm-downloads-image]][downloads-url] [![MIT License][license-image]][license-url]
 
-![Iran Map Vue](https://unpkg.com/lifeweb-text-highlighter@1.0.0/lifeweb-text-highlighter.jpg)
+![Text Highlight](https://unpkg.com/lifeweb-text-highlighter@1.0.0/lifeweb-text-highlighter.jpg)
 
 text highlighter... :)
 
@@ -25,7 +25,6 @@ npm i lifeweb-text-highlighter
 import Highlighter from 'lifeweb-text-highlighter'
 
 <Highlighter
-    caseSensitive = {false}
     searchWords = {[{text: "test", style: {backgroundColor: 'yellow'}}]}
     textToHighlight = {"this is a test"}
 />
