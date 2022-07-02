@@ -192,7 +192,7 @@ class Highlighter extends Component {
       ];
 
       for (let i = 0; i < all.length; i++) {
-        let style = all[i].style;
+        let style = all[i].style || {};
         start = all[i].from;
 
         if (end < start) {
@@ -201,19 +201,21 @@ class Highlighter extends Component {
               {this.addBreak(textToHighlight, end, start, breakLineIndex)}
             </span>
           );
+        } else {
+          continue;
         }
 
         end = all[i].to;
 
         // اگر شروع بعدی از انتها کوچکتر بود
         for (let j = i + 1; j < all.length; j++) {
-          if (all[j].from < end && all[j].to >= end) {
+          if (all[j].from <= end && all[j].to >= end) {
             end = all[j].to;
             i = j;
           }
         }
         data.push(
-          <mark key={`m_${i}`} style={style}>
+          <mark key={`m_${i}`} style={{ padding: "0" , ...style}}>
             {this.addBreak(textToHighlight, start, end, breakLineIndex)}
           </mark>
         );
