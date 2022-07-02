@@ -7,6 +7,9 @@ interface DefaultProps {
 }
 
 declare class Help extends React.Component<DefaultProps> {
+    public static defaultProps = {
+        caseSensitive: false
+    };
     // @ts-ignore
     render(): JSX.Element;
 }
