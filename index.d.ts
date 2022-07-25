@@ -1,12 +1,17 @@
 import * as React from 'react';
 
+interface SearchWords {
+    text: string;
+    style?: object;
+}
 interface DefaultProps {
     caseSensitive?: boolean,
-    searchWords?: [{text:string,style?:object}],
-    textToHighlight?: string|node,
+    searchWords?: SearchWords[],
+    textToHighlight?: string|React.ReactNode,
 }
 
-declare class Help extends React.Component<DefaultProps> {
+declare class Highlighter extends React.Component<DefaultProps> {
+    // @ts-ignore
     public static defaultProps = {
         caseSensitive: false
     };
@@ -14,4 +19,4 @@ declare class Help extends React.Component<DefaultProps> {
     render(): JSX.Element;
 }
 
-export default Help;
+export default Highlighter;
