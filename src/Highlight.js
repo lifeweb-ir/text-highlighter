@@ -45,21 +45,6 @@ const htmlToString = (html, changeBr = true, paragrephLength = 0) => {
 };
 
 class Highlighter extends Component {
-  static propTypes = {
-    caseSensitive: PropTypes.bool,
-    searchWords: PropTypes.arrayOf(
-      PropTypes.shape({
-        text: PropTypes.string,
-        style: PropTypes.object,
-      })
-    ),
-    textToHighlight: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  };
-  static defaultProps = {
-    caseSensitive: false,
-    searchWords: [],
-    textToHighlight: "",
-  };
   constructor(props) {
     super(props);
     this.breakCount = 0;
@@ -104,7 +89,6 @@ class Highlighter extends Component {
     let AllWords = [];
     let firstEnd = [];
     let firstIndexesWord = [];
-    let wordLength;
     let findWordObj = [];
     if (_textToHighlight) {
       let textToHighlight = "";
@@ -136,8 +120,10 @@ class Highlighter extends Component {
       }
       searchWords.map((word, idx) => {
         if (word && word.text) {
-          wordLength = word.text.trim().length;
-
+          let r = new RegExp(
+              caseSensitive ? ` ${word.text.trim()} ` : `${word.text.trim()}`,
+              "gim"
+          )
           firstIndexesWord = [
             ...textToHighlight.matchAll(
               new RegExp(
@@ -145,17 +131,20 @@ class Highlighter extends Component {
                 "gim"
               )
             ),
-          ].map((a) => a.index);
+          ].map((a) => [a.index,a[0].length,a[0]]);
           let caseSensitiveWord = caseSensitive ? 0 : 1;
           findWordObj = firstIndexesWord.map((first, index) => {
-            firstEnd.push(first, first + wordLength);
+            firstEnd.push(first[0], first[0] + first[1]);
 
             return Object.assign({
-              from: first - caseSensitiveWord,
-              to: first + wordLength - caseSensitiveWord,
+              from: first[0] - caseSensitiveWord,
+              to: first[0] + first[1] - caseSensitiveWord,
               style: word.style || {},
               word: word.text,
               idx: idx,
+              onClick:(w,e)=> {
+                word.onClick && word.onClick(first[2], w, e)
+              },
             });
           });
           AllWords.push(...findWordObj);
@@ -184,7 +173,8 @@ class Highlighter extends Component {
       });
 
       let start = 0;
-      let end = 0;
+      let end = -1;
+
       all = [
         ...new Map(
           all.map((item) => [`${item["from"]}_${item["to"]}`, item])
@@ -215,7 +205,7 @@ class Highlighter extends Component {
           }
         }
         data.push(
-          <mark key={`m_${i}`} style={{ padding: "0" , ...style}}>
+          <mark onClick={(e)=> all[i].onClick(all[i].word, e)} key={`m_${i}`} style={{ padding: "0" , ...style}}>
             {this.addBreak(textToHighlight, start, end, breakLineIndex)}
           </mark>
         );
