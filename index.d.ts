@@ -2,7 +2,8 @@ import * as React from 'react';
 
 interface SearchWords {
     text: string;
-    style?: object;
+    style?: React.CSSProperties;
+    onClick?: (foundText:string, text:string, event:React.MouseEvent)=> void;
 }
 interface DefaultProps {
     caseSensitive?: boolean,
