@@ -120,10 +120,6 @@ class Highlighter extends Component {
       }
       searchWords.map((word, idx) => {
         if (word && word.text) {
-          let r = new RegExp(
-              caseSensitive ? ` ${word.text.trim()} ` : `${word.text.trim()}`,
-              "gim"
-          )
           firstIndexesWord = [
             ...textToHighlight.matchAll(
               new RegExp(
@@ -201,6 +197,7 @@ class Highlighter extends Component {
         for (let j = i + 1; j < all.length; j++) {
           if (all[j].from <= end && all[j].to >= end) {
             end = all[j].to;
+            style = all[j].style || style
             i = j;
           }
         }

@@ -1,6 +1,6 @@
 {
   "name": "lifeweb-text-highlighter",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "text highlighter",
   "main": "lib/Highlight.js",
   "module": "lib/Highlight.js",
