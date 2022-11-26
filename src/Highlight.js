@@ -51,7 +51,9 @@ class Highlighter extends Component {
   }
 
   addBreak = (text = "", start, end, breakIndex = []) => {
-    let _t = text.slice(start, end);
+    let _s = start;
+    _s = _s < 0 ? 0 : _s;
+    let _t = text.slice(_s, end);
     let t = [];
     let s = 0;
     let e = _t.length;
@@ -123,7 +125,7 @@ class Highlighter extends Component {
           firstIndexesWord = [
             ...textToHighlight.matchAll(
               new RegExp(
-                caseSensitive ? ` ${word.text.trim()} ` : `${word.text.trim()}`,
+                caseSensitive ? `(?:^|\\s|\\#|\\(|\\)|\\@|\\!|\\%|\\_)${word.text.trim()}(?:\\s|\\#|\\(|\\)|\\@|\\!|\\%|\\_)` : `${word.text.trim()}`,
                 "gim"
               )
             ),
@@ -132,9 +134,11 @@ class Highlighter extends Component {
           findWordObj = firstIndexesWord.map((first, index) => {
             firstEnd.push(first[0], first[0] + first[1]);
 
+            let f = first[0] - caseSensitiveWord;
+
             return Object.assign({
-              from: first[0] - caseSensitiveWord,
-              to: first[0] + first[1] - caseSensitiveWord,
+              from: f,
+              to: f + first[1] + (caseSensitive ? -2 : 0),
               style: word.style || {},
               word: word.text,
               idx: idx,
@@ -155,7 +159,6 @@ class Highlighter extends Component {
 
       firstEnd = Array.from(new Set(firstEnd));
       firstEnd.sort((a, b) => a - b);
-
       let all = AllWords.sort((a, b) => {
         if (a.from > b.from) return 1;
 
@@ -180,6 +183,8 @@ class Highlighter extends Component {
       for (let i = 0; i < all.length; i++) {
         let style = all[i].style || {};
         start = all[i].from;
+
+        start = start < 0 ? 0 : start;
 
         if (end < start) {
           data.push(
