@@ -45,6 +45,24 @@ const htmlToString = (html, changeBr = true, paragrephLength = 0) => {
 };
 
 class Highlighter extends Component {
+  static propTypes = {
+    caseSensitive: PropTypes.bool,
+    searchWords: PropTypes.arrayOf(PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      className: PropTypes.string,
+      style: PropTypes.object,
+      onClick: PropTypes.func,
+    })),
+    textToHighlight: PropTypes.any,
+    globalClassName: PropTypes.string,
+    globalStyle: PropTypes.object,
+    globalOnClick: PropTypes.func
+  }
+
+  static defaultProps = {
+    caseSensitive: false,
+    searchWords: []
+  };
   constructor(props) {
     super(props);
     this.breakCount = 0;
@@ -93,6 +111,9 @@ class Highlighter extends Component {
     let firstEnd = [];
     let firstIndexesWord = [];
     let findWordObj = [];
+    if(!(searchWords && searchWords.length > 0)) {
+      return _textToHighlight;
+    }
     if (_textToHighlight) {
       let textToHighlight = "";
       let breakLineIndex = [];
@@ -177,11 +198,15 @@ class Highlighter extends Component {
       let start = 0;
       let end = -1;
 
-      all = [
-        ...new Map(
-          all.map((item) => [`${item["from"]}_${item["to"]}`, item])
-        ).values(),
-      ];
+      if(all && all[0]) {
+        all = [
+          ...new Map(
+              all.map((item) => [`${item["from"]}_${item["to"]}`, item])
+          ).values(),
+        ];
+      } else {
+        all = []
+      }
 
       for (let i = 0; i < all.length; i++) {
         let style = all[i].style || {};
