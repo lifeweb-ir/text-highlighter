@@ -87,6 +87,7 @@ class Highlighter extends Component {
   };
 
   renderHighlighter(_textToHighlight, searchWords, caseSensitive) {
+    const { globalClassName, globalStyle, globalOnClick } = this.props;
     let data = [];
     let AllWords = [];
     let firstEnd = [];
@@ -139,11 +140,13 @@ class Highlighter extends Component {
             return Object.assign({
               from: f,
               to: f + first[1] + (caseSensitive ? -2 : 0),
-              style: word.style || {},
+              style: word.style || globalStyle || {},
+              className: word.className || globalClassName || "",
               word: word.text,
               idx: idx,
               onClick:(w,e)=> {
-                word.onClick && word.onClick(first[2], w, e)
+                word.onClick ? word.onClick(first[2], w, e) :
+                    globalOnClick ? globalOnClick(first[2], w, e) : undefined
               },
             });
           });
@@ -182,6 +185,7 @@ class Highlighter extends Component {
 
       for (let i = 0; i < all.length; i++) {
         let style = all[i].style || {};
+        let className = all[i].className || "";
         start = all[i].from;
 
         start = start < 0 ? 0 : start;
@@ -203,11 +207,12 @@ class Highlighter extends Component {
           if (all[j].from <= end && all[j].to >= end) {
             end = all[j].to;
             style = all[j].style || style
+            className = all[j].className || className || ""
             i = j;
           }
         }
         data.push(
-          <mark onClick={(e)=> all[i].onClick(all[i].word, e)} key={`m_${i}`} style={{ padding: "0" , ...style}}>
+          <mark onClick={(e)=> all[i].onClick(all[i].word, e)} key={`m_${i}`} className={className} style={{ padding: "0" , ...style}}>
             {this.addBreak(textToHighlight, start, end, breakLineIndex)}
           </mark>
         );
