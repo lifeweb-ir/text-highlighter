@@ -5,6 +5,7 @@ interface SearchWords {
     className?: string;
     style?: React.CSSProperties;
     onClick?: (foundText?:string, text?:string, event?:React.MouseEvent)=> void;
+    render?: (foundText?:string, startIndex?:number, endIndex?:number)=> string;
 }
 interface DefaultProps {
     caseSensitive?: boolean,

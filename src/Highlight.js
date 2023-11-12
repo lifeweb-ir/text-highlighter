@@ -144,12 +144,28 @@ class Highlighter extends Component {
       }
       searchWords.map((word, idx) => {
         if (word && word.text) {
+          let reg = `${word.text.trim()}`;
+          if(caseSensitive){
+            let __w =word.text.trim();
+            reg = `(?:^|\\s|\\#?|\\(|\\)|\\@?|\\!|\\%|\\_)${__w}`
+            let t = [...`${__w}`.matchAll(new RegExp("\\\\s","gim"))];
+            if(!(t.length && t[t.length - 1] && t[t.length - 1].index && __w.length && (__w.length - t[t.length - 1].index ) < 4)) {
+              reg += `(?:\\s|\\#|\\(|\\)|\\@|\\!|\\%|\\_)`
+            }
+          }
+          let _reg = new RegExp("----" ,
+              "gim"
+          )
+          try{
+            _reg = new RegExp(reg ,
+                "gim"
+            )
+          } catch(e){
+            console.log(word.text)
+          }
           firstIndexesWord = [
             ...textToHighlight.matchAll(
-              new RegExp(
-                caseSensitive ? `(?:^|\\s|\\#|\\(|\\)|\\@|\\!|\\%|\\_)${word.text.trim()}(?:\\s|\\#|\\(|\\)|\\@|\\!|\\%|\\_)` : `${word.text.trim()}`,
-                "gim"
-              )
+                _reg
             ),
           ].map((a) => [a.index,a[0].length,a[0]]);
           let caseSensitiveWord = caseSensitive ? 0 : 1;
@@ -165,6 +181,7 @@ class Highlighter extends Component {
               className: word.className || globalClassName || "",
               word: word.text,
               idx: idx,
+              render: word.render,
               onClick:(w,e)=> {
                 word.onClick ? word.onClick(first[2], w, e) :
                     globalOnClick ? globalOnClick(first[2], w, e) : undefined
@@ -238,7 +255,7 @@ class Highlighter extends Component {
         }
         data.push(
           <mark onClick={(e)=> all[i].onClick(all[i].word, e)} key={`m_${i}`} className={className} style={{ padding: "0" , ...style}}>
-            {this.addBreak(textToHighlight, start, end, breakLineIndex)}
+            {all[i].render ? all[i].render(this.addBreak(textToHighlight, start, end, breakLineIndex), start, end, breakLineIndex) : this.addBreak(textToHighlight, start, end, breakLineIndex)}
           </mark>
         );
       }
