@@ -30,35 +30,27 @@ import Highlighter from 'lifeweb-text-highlighter'
 />
 ```
 
-## Props
-```js
-{
-      caseSensitive: {
-        type: Boolean,
-        default: false,
-      },
-      searchWords: {
-        type: Array,
-        default: [],
-      },
-      textToHighlight: {
-        type: String,
-        default: '',
-      },     
-}
-```
 
-## searchWords
-```js
-    text: {
-        type: String,
-        default: "",
-    },
-    style: {
-        type: Object,
-        default: {},
-    },
-```
+## Props
+
+| Attribute        |      type                   |  default |
+|------------------|:---------------------------:|---------:|
+| caseSensitive    | `boolean`                   | `false`  |
+| searchWords      | [`PatternItem[]`](#pattern) | `[]`     |
+| textToHighlight  | `string`                    |  ''      |
+| globalClassName  | `string`                    |  null    |
+| globalStyle      | `CSSProperties`             |  null    |
+| globalOnClick    | `function`                  |  null    |
+ 
+#### Pattern Item
+| Attribute   |      type        |  default             |
+|-------------|:----------------:|---------------------:|
+| text        | RegExp `string`  | ``                   |
+| className   | `string`         | null                 |
+| style       | `CSSProperties`  | {`background`: `yellow`} |
+| onClick     | `function`       |  null                |
+| render      | `function`       |  null                |
+
 
 ## License
 

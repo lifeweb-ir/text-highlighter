@@ -161,7 +161,7 @@ class Highlighter extends Component {
                 "gim"
             )
           } catch(e){
-            console.log(word.text)
+            console.error(`%c Text Highlighter: %c '${word.text}' %c is not valid RegExp string`, "color:yellow",  "color:red", "color:#fff");
           }
           firstIndexesWord = [
             ...textToHighlight.matchAll(
